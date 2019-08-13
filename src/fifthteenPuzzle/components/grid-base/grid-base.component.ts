@@ -1,4 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { tap } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { fifthteenPuzzleState } from '../../fifthteenPuzzle.types';
+import { selectRandomizerSelection } from '../../../randomizer/store/selectors/randomizer.selector';
+import { randomizerState, randomizerSelection } from '../../../randomizer/randomizer.types';
+import { fifthteenPuzzleTile, fifthteenPuzzleOptions } from '../../fifthteenPuzzle.types';
+import { GRID_SORTED } from '../../store/actions';
+
 
 @Component({
   selector: 'grid-base',
@@ -7,28 +15,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GridBaseComponent implements OnInit {
 
-  private tiles = [
-    {displayValue: "1", value: 0, position: 0},
-    {displayValue: "2", value: 1, position: 1},
-    {displayValue: "3", value: 2, position: 2},
-    {displayValue: "4", value: 3, position: 3},
-    {displayValue: "5", value: 4, position: 4},
-    {displayValue: "6", value: 5, position: 5},
-    {displayValue: "7", value: 6, position: 6},
-    {displayValue: "8", value: 7, position: 7},
-    {displayValue: "9", value: 8, position: 8},
-    {displayValue: "10", value: 9, position: 9},
-    {displayValue: "11", value: 10, position: 10},
-    {displayValue: "12", value: 11, position: 11},
-    {displayValue: "13", value: 12, position: 12},
-    {displayValue: "14", value: 13, position: 13},    
-    {displayValue: "", value: 15, position: 14, empty: true},
-    {displayValue: "15", value: 14, position: 15}    
-  ]
-  // private tiles = [];
-  private selectedTile = null;
+  // private tiles: fifthteenPuzzleTile[] = [
+  //   {displayValue: "1", value: 0, position: 0},
+  //   {displayValue: "2", value: 1, position: 1},
+  //   {displayValue: "3", value: 2, position: 2},
+  //   {displayValue: "4", value: 3, position: 3},
+  //   {displayValue: "5", value: 4, position: 4},
+  //   {displayValue: "6", value: 5, position: 5},
+  //   {displayValue: "7", value: 6, position: 6},
+  //   {displayValue: "8", value: 7, position: 7},
+  //   {displayValue: "9", value: 8, position: 8},
+  //   {displayValue: "10", value: 9, position: 9},
+  //   {displayValue: "11", value: 10, position: 10},
+  //   {displayValue: "12", value: 11, position: 11},
+  //   {displayValue: "13", value: 12, position: 12},
+  //   {displayValue: "14", value: 13, position: 13},    
+  //   {displayValue: "", value: 15, position: 14, empty: true},
+  //   {displayValue: "15", value: 14, position: 15}    
+  // ]
+  private tiles: fifthteenPuzzleTile[] = [];
+  private selectedTile: fifthteenPuzzleTile;
+  private randomizerStateSubscription: randomizerState;
+  private randomizerEffect: randomizerSelection;
 
-  private options = {
+  private options: fifthteenPuzzleOptions = {
     containerWidth: 460,
     containerHeight: 460,
     rows: 4,
@@ -37,15 +47,21 @@ export class GridBaseComponent implements OnInit {
   private tileWidth = 0;
   private tileHeight = 0;
 
-  constructor() { }
+  constructor(private store: Store<fifthteenPuzzleState>) { } // Store<{ count: number }>
 
   ngOnInit() {
-    // this.tiles = this.initiateNumericTiles(); 
+    this.tiles = this.initiateNumericTiles(); 
     this.tileWidth = this.options.containerWidth / this.options.rows
     this.tileHeight = this.options.containerHeight / this.options.columns
+
+     this.store
+    .select(selectRandomizerSelection)
+    .subscribe(value => (console.log(value)))
+
   }
 
   private performMove(tile) {
+
     if(!this.selectedTile && !tile.empty){
       this.selectedTile = tile;
     }
@@ -78,15 +94,17 @@ export class GridBaseComponent implements OnInit {
     let isSorted = false;
     for (let tile of this.tiles){      
       if(tile.value == tile.position){
-        isSorted = true;
-        
+        isSorted = true;    
       }
       else{
         isSorted = false;
         break
       }
     }
-    console.log("sorted: ", isSorted)
+    if(isSorted){
+      this.store.dispatch({type: GRID_SORTED, payload: {gridSorted: true}})   
+      alert('Success animation in progress :)'); 
+    }
   }
 
   private initiateNumericTiles() {

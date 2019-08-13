@@ -1,0 +1,10 @@
+<div id="gridBase">
+ 
+    <div class="tileContainer" *ngFor="let tile of tiles">
+        <grid-tile [tile]="tile" 
+                   [tileWidth]="tileWidth" 
+                   [tileHeight]="tileHeight" 
+                   (registerSelectedTile)="performMove($event)"></grid-tile>
+    </div>
+
+</div>
