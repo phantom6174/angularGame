@@ -3,7 +3,7 @@ This project is in progress.
 
 ## Pending:
 ### Current stage:
-1. Create Randomizer animation effects.
+1. ~~Create Randomizer animation effects.~~
 2. Randomizer position and style.
 3. Improve randomizer style effect selection (in randomizer-base.component).
 4. Improve 15puzzle styles.

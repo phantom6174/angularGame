@@ -3,7 +3,8 @@ import { randomizerState } from '../../randomizer.types'
 
 export const initialState = {
   randomSelection: {
-    name: 'none'
+     displayValue: false,
+     duration: 0
   }
 }
 

@@ -7,5 +7,10 @@ export interface randomizerState {
 }
 
 export interface randomizerSelection {
-  name: string;
+  displayValue: string | boolean;
+  duration: number;
+  animationClass?: string;
+  transformedProp?: 'rotate' | 'translate';
+  unit?: string;
+  increment?: number;
 }

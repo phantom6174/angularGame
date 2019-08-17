@@ -12,8 +12,8 @@ export class RandomizerOptionComponent implements OnInit {
   @Input() tileHeight: number;
   @Output() registerSelectedTile = new EventEmitter();
 
-  private width = "";
-  private height = "";
+  public width = "";
+  public height = "";
 
   ngOnInit() {
     this.width = `${this.tileWidth - 4}px`
@@ -23,5 +23,4 @@ export class RandomizerOptionComponent implements OnInit {
   tileSelected(tile){
     this.registerSelectedTile.emit(tile)
   }
-
 }

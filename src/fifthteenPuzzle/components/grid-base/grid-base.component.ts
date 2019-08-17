@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { last } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { fifthteenPuzzleState } from '../../fifthteenPuzzle.types';
 import { selectRandomizerSelection } from '../../../randomizer/store/selectors/randomizer.selector';
@@ -33,10 +33,9 @@ export class GridBaseComponent implements OnInit {
   //   {displayValue: "", value: 15, position: 14, empty: true},
   //   {displayValue: "15", value: 14, position: 15}    
   // ]
-  private tiles: fifthteenPuzzleTile[] = [];
   private selectedTile: fifthteenPuzzleTile;
   private randomizerStateSubscription: randomizerState;
-  private randomizerEffect: randomizerSelection;
+  private animationInProgress = false;
 
   private options: fifthteenPuzzleOptions = {
     containerWidth: 460,
@@ -44,8 +43,13 @@ export class GridBaseComponent implements OnInit {
     rows: 4,
     columns: 4
   }
-  private tileWidth = 0;
-  private tileHeight = 0;
+  public tiles: fifthteenPuzzleTile[] = [];
+  public tileWidth = 0;
+  public tileHeight = 0;
+  public randomizerEffect: randomizerSelection;
+  public transformedStyle: {
+    'transform': string
+    'transition-property'?: string};
 
   constructor(private store: Store<fifthteenPuzzleState>) { } // Store<{ count: number }>
 
@@ -56,11 +60,81 @@ export class GridBaseComponent implements OnInit {
 
      this.store
     .select(selectRandomizerSelection)
-    .subscribe(value => (console.log(value)))
+    .subscribe(value => {
+      this.randomizerEffect = value  
+      this.applyAnimation(this.randomizerEffect);
+      }    
+    )
+  }
+
+  private applyAnimation(effect: randomizerSelection): void{ // TODO: create constant rotation
+    let duration = 0;
+    let increment = effect.increment;
+    if(effect.displayValue && !effect.animationClass && !this.animationInProgress){
+      const interval = setInterval(()=>{
+        this.animationInProgress = true;
+        duration++;    
+        this.transformedStyle = {transform: `
+                                ${effect.transformedProp}(${increment + effect.unit})`}
+        increment += effect.increment;
+        if(duration == effect.duration){
+          clearInterval(interval);
+          setTimeout(()=>{
+            this.transformedStyle = {
+              'transition-property': 'none',
+              transform: `${effect.transformedProp}(${0 + effect.unit})`}
+            this.animationInProgress = false;
+          }, 1000)
+        }
+      }, 1000)
+    }
 
   }
 
-  private performMove(tile) {
+  private isValidMove(currentTileIndex, emptyTileIndex): boolean  {
+    return currentTileIndex + 1 == emptyTileIndex ||
+           currentTileIndex - 1 == emptyTileIndex ||
+           currentTileIndex + this.options.columns == emptyTileIndex ||
+           currentTileIndex - this.options.columns == emptyTileIndex 
+  }
+
+  private isSorted(): void {
+    let isSorted = false;
+    for (let tile of this.tiles){      
+      if(tile.value == tile.position){
+        isSorted = true;    
+      }
+      else{
+        isSorted = false;
+        break
+      }
+    }
+    if(isSorted){
+      this.store.dispatch({type: GRID_SORTED, payload: {gridSorted: true}})   
+      alert('Success animation in progress :)'); 
+    }
+  }
+
+  private initiateNumericTiles(): fifthteenPuzzleTile[] {
+    const amount = this.options.rows * this.options.columns;
+    const initialTiles = [];
+    const randomizedTiles = [];
+    for (let tile = 0; tile < amount; tile++){
+      const empty = tile == amount - 1;
+      const displayValue = empty ? "" : `${tile + 1}`;
+      initialTiles.push({displayValue: displayValue, value: 0, position: 0, empty: empty});
+    }
+
+    for (let tile = 0; tile < amount; tile++){
+      const randomTileIndex = Math.floor(Math.random() * (initialTiles.length))
+      initialTiles[randomTileIndex].position = tile;
+      randomizedTiles.push(initialTiles[randomTileIndex]);
+      initialTiles.splice(randomTileIndex, 1);
+    }
+    return randomizedTiles;
+  }
+
+  public performMove(tile): void {
 
     if(!this.selectedTile && !tile.empty){
       this.selectedTile = tile;
@@ -81,48 +155,5 @@ export class GridBaseComponent implements OnInit {
         this.isSorted(); 
       }
     }
-  }
-
-  private isValidMove(currentTileIndex, emptyTileIndex) {
-    return currentTileIndex + 1 == emptyTileIndex ||
-           currentTileIndex - 1 == emptyTileIndex ||
-           currentTileIndex + this.options.columns == emptyTileIndex ||
-           currentTileIndex - this.options.columns == emptyTileIndex 
-  }
-
-  private isSorted() {
-    let isSorted = false;
-    for (let tile of this.tiles){      
-      if(tile.value == tile.position){
-        isSorted = true;    
-      }
-      else{
-        isSorted = false;
-        break
-      }
-    }
-    if(isSorted){
-      this.store.dispatch({type: GRID_SORTED, payload: {gridSorted: true}})   
-      alert('Success animation in progress :)'); 
-    }
-  }
-
-  private initiateNumericTiles() {
-    const amount = this.options.rows * this.options.columns;
-    const initialTiles = [];
-    const randomizedTiles = [];
-    for (let tile = 0; tile < amount; tile++){
-      const empty = tile == amount - 1;
-      const displayValue = empty ? "" : `${tile + 1}`;
-      initialTiles.push({displayValue: displayValue, value: 0, position: 0, empty: empty});
-    }
-
-    for (let tile = 0; tile < amount; tile++){
-      const randomTileIndex = Math.floor(Math.random() * (initialTiles.length))
-      initialTiles[randomTileIndex].position = tile;
-      randomizedTiles.push(initialTiles[randomTileIndex]);
-      initialTiles.splice(randomTileIndex, 1);
-    }
-    return randomizedTiles;
   }
 }

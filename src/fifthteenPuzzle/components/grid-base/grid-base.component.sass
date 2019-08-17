@@ -1,18 +1,40 @@
 // animation-direction: reverse;
 #gridBase
-    width:460px
-    height: 460px
-    background-color: rgba(255, 255, 255, 0.7)
-    display: flex
-    flex-wrap: wrap
-    animation-name: default-rotation
-    animation-duration: 15s
-    animation-iteration-count: infinite
-    animation-timing-function: linear
+  width:460px
+  height: 460px
+  background-color: rgba(255, 255, 255, 0.7)
+  display: flex
+  flex-wrap: wrap
+  animation-timing-function: linear
+  animation-iteration-count: infinite
+  transition-property: transform
+  transition-timing-function: linear
+  transition-duration: 1s
 
+.fifthteenPuzzle-vertical-tremble
+  animation-name: fifthteenPuzzle-vertical-tremble
+  animation-duration: 0.1s
 
-@keyframes default-rotation
+.fifthteenPuzzle-horizontal-tremble
+  animation-name: fifthteenPuzzle-horizontal-tremble
+  animation-duration: 0.1s
+
+@keyframes fifthteenPuzzle-vertical-tremble
   0%
-    transform: rotate(0deg)
+    transform: translateY(0px)
+  25% 
+    transform: translateY(10px) 
+  75% 
+    transform: translateY(-10px)  
   100%
-    transform: rotate(360deg)
+    transform: translateY(0px)
+
+@keyframes fifthteenPuzzle-horizontal-tremble
+  0%
+    transform: translateX(0px)
+  25% 
+    transform: translateX(10px) 
+  75% 
+    transform: translateX(-10px)  
+  100%
+    transform: translateX(0px)

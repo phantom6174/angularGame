@@ -1,4 +1,5 @@
-<div id="gridBase">
+<div id="gridBase" [ngClass]="randomizerEffect.animationClass || ''"
+                   [ngStyle]="transformedStyle" >
  
     <div class="tileContainer" *ngFor="let tile of tiles">
         <grid-tile [tile]="tile" 
