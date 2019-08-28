@@ -16,8 +16,8 @@ export class GridTileComponent implements OnInit {
   public height = "";
 
   ngOnInit() {
-    this.width = `${this.tileWidth - 4}px`
-    this.height = `${this.tileHeight - 4}px`
+    this.width = `${this.tileWidth - 8}%`
+    this.height = `${this.tileHeight - 8}%`
   }
 
   tileSelected(tile){

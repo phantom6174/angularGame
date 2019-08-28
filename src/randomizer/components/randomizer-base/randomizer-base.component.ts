@@ -10,12 +10,16 @@ import { FindValueSubscriber } from 'rxjs/internal/operators/find';
   styleUrls: ['./randomizer-base.component.sass']
 })
 export class RandomizerBaseComponent implements OnInit, OnDestroy {
-
   private default:randomizerSelection = {
-     displayValue: 'No selection',
-     animationClass: 'fifthteenPuzzle-default',
-     duration: 5};
+    displayValue: 'No selection',
+    animationClass: 'fifthteenPuzzle-default',
+    isDefault: true,
+    duration: 5};
   public selection = this.default;
+  public numOfRotatingOptions = 6;
+  public numOfTargetOption = 2;
+  public rotatingOptions = Array(this.numOfRotatingOptions);
+
   private modes: randomizerSelection[] = [
     {
       displayValue: 'Too Slow?',

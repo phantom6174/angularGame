@@ -1,8 +1,24 @@
-.gridTile
-  background-color: rgba(255, 255, 255, 0.8)
-  border: 1px solid black
-  margin: 1px
+.randomizerBase
+    height: 100%
+    overflow: hidden
+    border: 1px solid black
+    border-radius: 10px
 
-.hiddenGridTile
-  border: 1px solid rgba(0, 0, 0, 0) 
-  margin: 1px
+.randomizerOptionContainer
+    position: relative
+    width: 90%
+    height: 20%
+    margin-top: 0.5%
+    margin-left: 5%
+
+.animateRandomizerOptionContainer
+    animation-name: spin
+    animation-timing-function: linear
+    animation-iteration-count: infinite
+    animation-duration: 0.5s
+
+@keyframes spin
+  0%
+    bottom: 0%
+  100%
+    bottom: 20%

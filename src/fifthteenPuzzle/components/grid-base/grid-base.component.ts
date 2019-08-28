@@ -38,14 +38,14 @@ export class GridBaseComponent implements OnInit {
   private animationInProgress = false;
 
   private options: fifthteenPuzzleOptions = {
-    containerWidth: 460,
-    containerHeight: 460,
+    containerWidth: 100,
+    containerHeight: 100,
     rows: 4,
     columns: 4
   }
   public tiles: fifthteenPuzzleTile[] = [];
-  public tileWidth = 0;
-  public tileHeight = 0;
+  public tileWidth = 100;
+  public tileHeight = 100;
   public randomizerEffect: randomizerSelection;
   public transformedStyle: {
     'transform': string
@@ -55,9 +55,8 @@ export class GridBaseComponent implements OnInit {
 
   ngOnInit() {
     this.tiles = this.initiateNumericTiles(); 
-    this.tileWidth = this.options.containerWidth / this.options.rows
-    this.tileHeight = this.options.containerHeight / this.options.columns
-
+    // this.tileWidth = this.options.containerWidth / this.options.rows
+    // this.tileHeight = this.options.containerHeight / this.options.columns
      this.store
     .select(selectRandomizerSelection)
     .subscribe(value => {

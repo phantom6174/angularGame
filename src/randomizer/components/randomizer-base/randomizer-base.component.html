@@ -1,5 +1,5 @@
-<div>
-    <h3>
-        {{selection?.displayValue}}
-    </h3>
+<div class="randomizerBase">
+    <div *ngFor="let option of rotatingOptions; let i = index" class="randomizerOptionContainer" [ngClass]="selection?.isDefault ? 'animateRandomizerOptionContainer' : ''">
+        <randomizer-option [displayValue]="i == numOfTargetOption && !selection?.isDefault? selection?.displayValue : ''"></randomizer-option>
+    </div>
 </div>
